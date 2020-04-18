@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using DauaPharm.Data;
 using Syncfusion.Blazor;   // добавил
+using DauaPharm.Data;      // добавил 
 
 namespace DauaPharm
 {
@@ -28,15 +29,23 @@ namespace DauaPharm
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+        //    services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();  // добавил
+
+            // SQL database connection (name defined in appsettings.json).
+            var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("SqlDBcontext"));
+            services.AddSingleton(SqlConnectionConfiguration);
+
+            // Optional for debugging
+            services.AddServerSideBlazor(o => o.DetailedErrors = true);
+
             services.AddSingleton<WeatherForecastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // добавил
+            // добавил ключ 
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MjQyNDQzQDMxMzgyZTMxMmUzMEZIMGdyNU91RTF0T1IwQnp3RDMyMlZUcVlPWmdyOUlUa2lncVBWWWlEbzA9");
             
             if (env.IsDevelopment())
