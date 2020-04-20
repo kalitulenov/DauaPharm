@@ -12,6 +12,6 @@ namespace BlazorDapperCRUD.Data
         Task<SprKdr> Pharm_GetOne(int Id);
         Task<bool> PharmUpdate(SprKdr SprKdr);
         Task<bool> PharmDelete(int id);
-        Task<Login> Pharm_GetLogin();
+        Login Pharm_GetLogin(string Log, string Psw);
     }
 }

@@ -90,20 +90,21 @@ namespace BlazorDapperCRUD.Data
         }
 
         // Читат Логин
-        public async Task<Login> Pharm_Login()
+        public Login Pharm_GetLogin(string Log, string Psw)
         {
-            Login login = new Login();
-            var parameters = new DynamicParameters();
-            //parameters.Add("Id", id, DbType.Int32);
+            Login loginTmp = new Login();
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                //  login = await conn.QueryFirstOrDefaultAsync<SprKdr>("spsprKdr_GetOne", parameters, commandType: CommandType.StoredProcedure);
                 // Raw SQL method
                 const string query = @"SELECT * FROM SPRBUX WHERE BUXLOG=@Log AND BUXPSW=@Psw";
-                //await conn.ExecuteAsync(query}, commandType: CommandType.Text);
-                login = await conn.QueryFirstOrDefaultAsync<Login>(query, parameters, commandType: CommandType.Text);
+                var parameters = new DynamicParameters();
+                parameters.Add("Log", Log, DbType.String);
+                parameters.Add("Psw", Psw, DbType.String);
+                loginTmp = conn.QueryFirstOrDefault<Login>(query, parameters, commandType: CommandType.Text);
             }
-            return login;
+            return loginTmp;
+           // return new Login() { OrgKod = loginTmp.OrgKod, BuxKod = loginTmp.BuxKod };
+
         }
 
 

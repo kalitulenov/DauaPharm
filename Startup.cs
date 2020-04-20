@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using DauaPharm.Data;
 using Syncfusion.Blazor;   // добавил
-using DauaPharm.Data;      // добавил 
+using BlazorDapperCRUD.Data;
 
 namespace DauaPharm
 {
@@ -32,6 +32,7 @@ namespace DauaPharm
         //    services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();  // добавил
 
+            services.AddScoped<IPharmService, PharmService>();
             // SQL database connection (name defined in appsettings.json).
             var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("SqlDBcontext"));
             services.AddSingleton(SqlConnectionConfiguration);

@@ -4,8 +4,11 @@
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Buttons
+@using BlazorDapperCRUD.Data
+@using DauaPharm.Data.Entities;
 
 @inject NavigationManager NavigationManager
+@inject IPharmService PharmService
 
 <center>
     <div class="col-12 row">
@@ -24,7 +27,7 @@
                 <label class="e-float-text">Логин</label>
             </div>
             <div class="e-float-input e-input-group">
-                <input id="textvalue2" type="password" @bind-value="@PasValue" required />
+                <input id="textvalue2" type="password" @bind-value="@PswValue" required />
                 <span class="e-float-line"></span>
                 <label class="e-float-text">Пароль</label>
             </div>
@@ -36,14 +39,14 @@
     </div>
 </div>
 <SfDialog IsModal="true" Width="280px" @bind-Visible="@Visibility">
-    <DialogEvents OnOpen="Validation"></DialogEvents>
+    @*<DialogEvents OnOpen="Validation"></DialogEvents>*@
     <DialogTemplates>
-        <Header> Success</Header>
-        <Content> Congratulations! Login Success</Content>
+        <Header> Ошибка</Header>
+        <Content> Ошибка в логине или в пароле</Content>
     </DialogTemplates>
     <DialogButtons>
         <DialogButton OnClick="@OnClick">
-            <DialogButtonModel Content="Dismiss" IsPrimary="true"></DialogButtonModel>
+            <DialogButtonModel Content="OK" IsPrimary="true"></DialogButtonModel>
         </DialogButton>
     </DialogButtons>
 </SfDialog>
@@ -58,7 +61,7 @@
     }
 
     #input-container .e-float-input { /* csslint allow: adjoining-classes */
-        margin: 17px 0;
+        margin: 15px 0;
     }
 
     .wrap #input-container .e-control e-btn { /* csslint allow: adjoining-classes */
@@ -96,77 +99,55 @@
 @code {
     public bool Visibility { get; set; } = false;
     private string LogValue { get; set; } = "";
-    private string PasValue { get; set; } = "";
+    private string PswValue { get; set; } = "";
 
     private void OnClick()
     {
         this.Visibility = false;
-        //     Console.WriteLine("OnClick");
     }
 
     private void OnClicked()
     {
-        this.Visibility = true;
-        //  Console.WriteLine("OnClicked");
+        //this.Visibility = true;
+        BeforeOpenEventArgs args = new BeforeOpenEventArgs();
+        args.Cancel = false;
+        Validation(args);
     }
 
     private void Validation(BeforeOpenEventArgs args)
     {
-        //  Console.WriteLine("Validation");
-        //     Console.WriteLine(args);
-        if (this.LogValue == "" && this.PasValue == "")
-        {
-            args.Cancel = true;
-            //         Console.WriteLine("clicked");
-        }
-        else
-        if (this.LogValue == "")
-        {
-            args.Cancel = true;
-            //    Console.WriteLine("Enter the username");
-        }
-        else
-            if (this.PasValue == "")
-        {
-            args.Cancel = true;
-            //     Console.WriteLine("Enter the password");
-        }
-        else
-                if (this.LogValue.Length < 4)
-        {
-            args.Cancel = true;
-            //    Console.WriteLine("Username must be minimum 4 characters");
-        }
-        else
-        {
-            args.Cancel = false;
-            this.LogValue = "";
-            this.PasValue = "";
-            this.StateHasChanged();
-            //     Console.WriteLine("Validation-End");
-            NavigationManager.NavigateTo("/index");
-        }
+        // Create a new, empty Login object
+        Login login = new Login();
 
-        //SqlConnection myconnection;
-        //SqlCommand mycmd;
-        //string strSql;
-        //SqlDataReader myReader;
-        //private void btnLogin_Click(object sender, System.EventArgs e)
-        //{
-        //    myconnection = new SqlConnection("Server=localhost;uid=sa;password=;database=northwind;");
-        //    strSql = "Select * from usertbl where username=" + "’" + txtUserName.Text + "’" + " and userpassword=" + "’" + txtPassword.Text + "’";
-        //    mycmd = new SqlCommand(strSql, myconnection);
-        //    myconnection.Open();
-        //    myReader = mycmd.ExecuteReader(CommandBehavior.CloseConnection);
-        //    if (myReader.Read())
-        //    {
-        //        Response.Write("Welcome");
-        //    }
-        //    else
-        //    {
-        //        Response.Write("Access Denied");
-        //    }
-        //}
 
+        if (this.LogValue == "" || this.PswValue == "")
+        {
+            args.Cancel = true;
+        }
+        else
+            if (this.LogValue.Length < 3)
+        {
+            args.Cancel = true;
+        }
+        else
+        {
+
+            //string Log, Psw;
+            //Log = this.LogValue;
+            //Psw = this.PswValue;
+
+            login = PharmService.Pharm_GetLogin(this.LogValue, this.PswValue);
+            if (login != null)
+            {
+                NavigationManager.NavigateTo("/index");
+            }
+            else
+            {
+                args.Cancel = true;
+                this.Visibility = true;
+                this.StateHasChanged();
+            }
+
+        }
     }
 }
