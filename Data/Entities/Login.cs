@@ -9,8 +9,8 @@ namespace DauaPharm.Data.Entities
     {
         public string LoginTxt { get; set; }
         public string PasswordTxt { get; set; }
-        public string BuxFrm { get; set; }
-        public string BuxKod { get; set; }
+        public int BuxFrm { get; set; }
+        public int BuxKod { get; set; }
 
     }
 }

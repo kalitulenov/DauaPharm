@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using DauaPharm.Data;
 using Syncfusion.Blazor;   // добавил
-using BlazorDapperCRUD.Data;
 
 namespace DauaPharm
 {
@@ -41,6 +40,7 @@ namespace DauaPharm
             services.AddServerSideBlazor(o => o.DetailedErrors = true);
 
             services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<AppState>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

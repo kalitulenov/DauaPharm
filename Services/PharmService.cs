@@ -7,7 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
-namespace BlazorDapperCRUD.Data
+namespace DauaPharm.Data
 {
     public class PharmService : IPharmService
     {
@@ -105,6 +105,20 @@ namespace BlazorDapperCRUD.Data
             return loginTmp;
            // return new Login() { OrgKod = loginTmp.OrgKod, BuxKod = loginTmp.BuxKod };
 
+        }
+
+        // читать Меню по параметрам BuxFrm,BuxKod (SQL Select)
+        public async Task<IEnumerable<Menu>> Pharm_GetMenu(int BuxFrm, int BuxKod)
+        {
+            IEnumerable<Menu> menus;
+            var parameters = new DynamicParameters();
+            parameters.Add("BUXFRM", BuxFrm, DbType.Int32);
+            parameters.Add("BUXKOD", BuxKod, DbType.Int32);
+            using (var conn = new SqlConnection(_configuration.Value))
+            {
+                  menus = await conn.QueryAsync<Menu>("ComSprBuxMnu", parameters, commandType: CommandType.StoredProcedure);
+            }
+            return menus;
         }
 
 

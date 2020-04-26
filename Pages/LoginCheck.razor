@@ -4,11 +4,12 @@
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Buttons
-@using BlazorDapperCRUD.Data
+@using DauaPharm.Data
 @using DauaPharm.Data.Entities;
 
 @inject NavigationManager NavigationManager
 @inject IPharmService PharmService
+@inject AppState AppState
 
 <center>
     <div class="col-12 row">
@@ -101,6 +102,9 @@
     private string LogValue { get; set; } = "";
     private string PswValue { get; set; } = "";
 
+    public int BuxFrm { get; set; }
+    public int BuxKod { get; set; }
+
     private void OnClick()
     {
         this.Visibility = false;
@@ -120,12 +124,13 @@
         Login login = new Login();
 
 
+
         if (this.LogValue == "" || this.PswValue == "")
         {
             args.Cancel = true;
         }
         else
-            if (this.LogValue.Length < 3)
+    if (this.LogValue.Length < 3)
         {
             args.Cancel = true;
         }
@@ -139,7 +144,12 @@
             login = PharmService.Pharm_GetLogin(this.LogValue, this.PswValue);
             if (login != null)
             {
-                NavigationManager.NavigateTo("/index");
+                //BuxFrm = login.BuxFrm;
+                //BuxKod = login.BuxKod;
+                AppState.BuxFrm = login.BuxFrm;
+                AppState.BuxKod = login.BuxKod;
+
+                NavigationManager.NavigateTo("/MenuComp");
             }
             else
             {
