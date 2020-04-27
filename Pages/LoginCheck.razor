@@ -136,20 +136,13 @@
         }
         else
         {
-
-            //string Log, Psw;
-            //Log = this.LogValue;
-            //Psw = this.PswValue;
-
             login = PharmService.Pharm_GetLogin(this.LogValue, this.PswValue);
             if (login != null)
             {
-                //BuxFrm = login.BuxFrm;
-                //BuxKod = login.BuxKod;
                 AppState.BuxFrm = login.BuxFrm;
                 AppState.BuxKod = login.BuxKod;
 
-                NavigationManager.NavigateTo("/MenuComp");
+                NavigationManager.NavigateTo("/Index");
             }
             else
             {

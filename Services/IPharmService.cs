@@ -14,5 +14,6 @@ namespace DauaPharm.Data
         Task<bool> PharmDelete(int id);
         Login Pharm_GetLogin(string Log, string Psw);
         Task<IEnumerable<Menu>> Pharm_GetMenu(int BuxFrm, int BuxKod);
+        Task<IEnumerable<SprBux>> Pharm_GetSprBux(int BuxFrm, int BuxUbl);
     }
 }

@@ -1,0 +1,50 @@
+﻿@page "/sprbuxcrd"
+@layout MainLayout
+
+
+@using Syncfusion.Blazor.Grids
+@using DauaPharm.Data;
+@using DauaPharm.Data.Entities;
+
+@inject AppState AppState
+@inject IPharmService PharmService
+
+<div class="col-lg-12 control-section">
+    <div class="content-wrapper">
+        <div class="row">
+            <SfGrid DataSource="@GridData" AllowPaging="true" Toolbar="@(new List<string>() { "Add" })" Height="315">
+                <GridPageSettings PageCount="5"></GridPageSettings>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" Format="d" Type="ColumnType.Date" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" Format="C2" TextAlign="TextAlign.Right" Width="140"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" Format="d" TextAlign="TextAlign.Right" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxDlg) HeaderText="Должность" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxUbl) HeaderText="Уврлен" Width="150"></GridColumn>
+                    <GridColumn HeaderText="Manage Records" Width="150">
+                        <GridCommandColumns>
+                            <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
+                            <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
+                            <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-save", CssClass="e-flat" })"></GridCommandColumn>
+                            <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-cancel-icon", CssClass="e-flat" })"></GridCommandColumn>
+                        </GridCommandColumns>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+
+@code{
+
+    // Create and empty list, named viideos, of empty Video objects.
+    IEnumerable<SprBux> GridData;
+    protected override async Task OnInitializedAsync()
+    {
+        //Populate the list of video objects from the Video table.
+        GridData = await PharmService.Pharm_GetSprBux(AppState.BuxFrm, AppState.BuxUbl);
+        //  GridData = OrdersDetails.GetAllRecords();
+    }
+
+}

@@ -121,6 +121,18 @@ namespace DauaPharm.Data
             return menus;
         }
 
-
+        // читать справочник SprBux по параметрам BuxFrm (SQL Select)
+        public async Task<IEnumerable<SprBux>> Pharm_GetSprBux(int BuxFrm,int BuxUbl)
+        {
+            IEnumerable<SprBux> buxs;
+            var parameters = new DynamicParameters();
+            parameters.Add("BUXFRM", BuxFrm, DbType.Int32);
+            parameters.Add("BUXUBL", BuxUbl, DbType.Int32);
+            using (var conn = new SqlConnection(_configuration.Value))
+            {
+                buxs = await conn.QueryAsync<SprBux>("ComSprBux", parameters, commandType: CommandType.StoredProcedure);
+            }
+            return buxs;
+        }
     }
 }
