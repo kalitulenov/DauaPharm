@@ -3,26 +3,30 @@
 
 
 @using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Buttons
+
 @using DauaPharm.Data;
 @using DauaPharm.Data.Entities;
 
 @inject AppState AppState
 @inject IPharmService PharmService
 
+
 <div class="col-lg-12 control-section">
     <div class="content-wrapper">
         <div class="row">
-            <SfGrid DataSource="@GridData" AllowPaging="true" Toolbar="@(new List<string>() { "Add" })" Height="315">
+            <SfGrid DataSource="@GridData" AllowSorting="true" AllowFiltering="false" AllowPaging="true" Toolbar="@(new List<string>() { "Add" })" Height="315">
                 <GridPageSettings PageCount="5"></GridPageSettings>
                 <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
+                <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin="OnBeginHandler" TValue="SprBux"></GridEvents>
                 <GridColumns>
-                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" Format="d" Type="ColumnType.Date" TextAlign="TextAlign.Right" Width="130"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" Format="C2" TextAlign="TextAlign.Right" Width="140"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" Format="d" TextAlign="TextAlign.Right" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxDlg) HeaderText="Должность" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxUbl) HeaderText="Уврлен" Width="150"></GridColumn>
-                    <GridColumn HeaderText="Manage Records" Width="150">
+                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" IsPrimaryKey="true" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" TextAlign="TextAlign.Right" Width="140"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" TextAlign="TextAlign.Right" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxDlg) HeaderText="Должность" EditType="EditType.DropDownEdit" Edit="@ShipNameEditParams" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxUbl) HeaderText="Уволен" EditType="EditType.BooleanEdit" Width="150"></GridColumn>
+                    <GridColumn HeaderText="Изм Удл" Width="150">
                         <GridCommandColumns>
                             <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
                             <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
@@ -36,7 +40,10 @@
     </div>
 </div>
 
+
+
 @code{
+    string Pol;
 
     // Create and empty list, named viideos, of empty Video objects.
     IEnumerable<SprBux> GridData;
@@ -46,5 +53,92 @@
         GridData = await PharmService.Pharm_GetSprBux(AppState.BuxFrm, AppState.BuxUbl);
         //  GridData = OrdersDetails.GetAllRecords();
     }
+
+    private void OnBeginHandler(ActionEventArgs<SprBux> Args)
+    {
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+        {
+            if (Args.Action == "add")
+            {
+                var t = Args.Data; //returns the edited / insrted record details.
+                                   //insert into your db
+            }
+            else
+            {
+                //update data into your db
+            }
+        }
+    }
+
+
+    public void ActionCompleteHandler(ActionEventArgs<SprBux> Args)
+    {
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+        {
+            if (Args.Action == "add")
+            {
+                var t = Args.Data; //returns the edited / insrted record details.
+                                   //insert into your db
+            }
+            else
+            {
+                //update data into your db
+            }
+        }
+        //if (args.RequestType == Action.Save)
+        //{
+        //    //var id = args.Data.Id;
+        //    //var value = OrdData.Find(X => X.OrderID == Args.Data.OrderID);
+        //    if (args.Action == "add")
+        //    {
+        //        //await Service.InsertOrderAsync(Args.Data);
+        //    }
+        //    else
+        //    {
+        //        //await Service.UpdateOrderAsync(Args.Data.OrderID.ToString(), Args.Data);
+        //    }
+        //}
+        //if (args.RequestType == Action.Delete)
+        //{
+        //    //await Service.DeleteOrderAsync(Args.Data.OrderID.ToString());
+        //}
+    }
+
+
+    public void CommandClickHandler(CommandClickEventArgs<SprBux> args)
+    {
+        if (args.CommandColumn.Type != CommandButtonType.Save)
+            return;
+
+        var lookup = args.RowData;
+
+        StateHasChanged();
+    }
+
+
+    public void RowSelectHandler(RowSelectEventArgs<SprBux> args)
+    {
+        // Here you can customize your code
+        var t = args.Data; //returns the edited / insrted record details.
+                           //insert into your db
+    }
+
+
+    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<SprBux> args)
+    {
+        // Here you can customize your code
+        var t = args.RowData; //returns the edited / insrted record details.
+    }
+
+    public void CellSavedHandler(CellSaveArgs<SprBux> args)
+    {
+        // Here you can customize your code
+        var t = args.Value; //returns the edited / insrted record details.
+    }
+
+    public object ShipNameEditParams = new
+    {
+       @@params = new EjsDropDownList<string>() { AllowFiltering = true }
+    };
 
 }
