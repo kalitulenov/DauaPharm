@@ -4,6 +4,7 @@
 
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
 
 @using DauaPharm.Data;
 @using DauaPharm.Data.Entities;
@@ -21,10 +22,26 @@
                 <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin="OnBeginHandler" TValue="SprBux"></GridEvents>
                 <GridColumns>
                     <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" IsPrimaryKey="true" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" TextAlign="TextAlign.Right" Width="130"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" TextAlign="TextAlign.Right" Width="140"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" TextAlign="TextAlign.Right" Width="150"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" TextAlign="TextAlign.Right" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxDlg) HeaderText="Должность" EditType="EditType.DropDownEdit" Edit="@ShipNameEditParams" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" TextAlign="TextAlign.Right" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxKey) HeaderText="Штатка" EditType="EditType.DropDownEdit" Width="300">
+                        <EditTemplate>
+                            <SfDropDownList ID="sdsStt" Placeholder="Выбор штатки" TItem="string" TValue="string" DataSource="@SprStt">
+                                <DropDownListEvents TValue="string" ValueChange="ValueChange"></DropDownListEvents>
+                                <DropDownListFieldSettings Text="SttNam" Value="SttKey"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                        </EditTemplate>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxDlg) HeaderText="Штатка" EditType="EditType.DropDownEdit" Width="300">
+                        <EditTemplate>
+                            <SfDropDownList ID="ssdDlg" Placeholder="Выбор должности" TItem="string" Enabled="@Enabled" TValue="string" DataSource="@SprDlg">
+                                <DropDownListEvents TValue="string" ValueChange="ValueChange"></DropDownListEvents>
+                                <DropDownListFieldSettings Text="DlgNam" Value="DlgKod"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                        </EditTemplate>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxMol) HeaderText="МОЛ" EditType="EditType.BooleanEdit" Width="150"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxUbl) HeaderText="Уволен" EditType="EditType.BooleanEdit" Width="150"></GridColumn>
                     <GridColumn HeaderText="Изм Удл" Width="150">
                         <GridCommandColumns>
@@ -47,6 +64,11 @@
 
     // Create and empty list, named viideos, of empty Video objects.
     IEnumerable<SprBux> GridData;
+    public bool Enabled = false;
+
+    public List<string> SprStt = new List<string>() { "United States", "Australia" };
+    public List<string> SprDlg = new List<string>() { "New York", "Virginia", "Washington" };
+
     protected override async Task OnInitializedAsync()
     {
         //Populate the list of video objects from the Video table.
@@ -102,6 +124,7 @@
         //{
         //    //await Service.DeleteOrderAsync(Args.Data.OrderID.ToString());
         //}
+        Enabled = false;
     }
 
 
@@ -130,15 +153,18 @@
         var t = args.RowData; //returns the edited / insrted record details.
     }
 
-    public void CellSavedHandler(CellSaveArgs<SprBux> args)
-    {
-        // Here you can customize your code
-        var t = args.Value; //returns the edited / insrted record details.
-    }
 
-    public object ShipNameEditParams = new
+    public void ValueChange(@Syncfusion.Blazor.DropDowns.ChangeEventArgs<string> args)
     {
-       @@params = new EjsDropDownList<string>() { AllowFiltering = true }
-    };
+        if (args.Value == "United States")
+        {
+            //   States = new List<string>() { "New York", "Virginia", "Washington" };
+        }
+        else if (args.Value == "Australia")
+        {
+            //    States = new List<string>() { "Queensland", "Tasmania", "Victoria" };
+        }
+        Enabled = true;
+    }
 
 }
