@@ -15,6 +15,7 @@ namespace DauaPharm.Data.Entities
         public string KdrFam { get; set; }
         public string KdrIma { get; set; }
         public string KdrOtc { get; set; }
+        public string KdrFio { get; set; }
         public bool? KdrRsd { get; set; }
         public bool? KdrSex { get; set; }
         public DateTime? KdrBrt { get; set; }

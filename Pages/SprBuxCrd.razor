@@ -21,29 +21,38 @@
                 <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
                 <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin="OnBeginHandler" TValue="SprBux"></GridEvents>
                 <GridColumns>
-                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" IsPrimaryKey="true" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" TextAlign="TextAlign.Right" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" TextAlign="TextAlign.Right" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" TextAlign="TextAlign.Right" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxKey) HeaderText="Штатка" EditType="EditType.DropDownEdit" Width="300">
+                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" IsPrimaryKey="true" Width="50"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" TextAlign="TextAlign.Right" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" TextAlign="TextAlign.Right" Width="100"></GridColumn>
+                    
+                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" ForeignKeyValue="KdrFio" ForeignKeyField="KdrKod" DataSource="@kdr" TextAlign="TextAlign.Right" Width="100">
                         <EditTemplate>
-                            <SfDropDownList ID="sdsStt" Placeholder="Выбор штатки" TItem="string" TValue="string" DataSource="@SprStt">
-                                <DropDownListEvents TValue="string" ValueChange="ValueChange"></DropDownListEvents>
-                                <DropDownListFieldSettings Text="SttNam" Value="SttKey"></DropDownListFieldSettings>
+                            <SfDropDownList ID="sdsTab" Placeholder="Выбор из кадра" PopupWidth="200" TItem="SprKdr" TValue="string" DataSource="@kdr">
+                                <DropDownListFieldSettings Text="KdrFio" Value="KdrKod"></DropDownListFieldSettings>
                             </SfDropDownList>
                         </EditTemplate>
                     </GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxDlg) HeaderText="Штатка" EditType="EditType.DropDownEdit" Width="300">
+                    
+                    <GridColumn Field=@nameof(SprBux.BuxKey) HeaderText="Штатка" ForeignKeyValue="SttStrNam" ForeignKeyField="SttStrKey" DataSource="@sttstr" EditType="EditType.DropDownEdit" Width="200">
                         <EditTemplate>
-                            <SfDropDownList ID="ssdDlg" Placeholder="Выбор должности" TItem="string" Enabled="@Enabled" TValue="string" DataSource="@SprDlg">
+                            <SfDropDownList ID="sdsStt" Placeholder="Выбор штатки" TItem="SprSttStr" TValue="string" DataSource="@sttstr">
                                 <DropDownListEvents TValue="string" ValueChange="ValueChange"></DropDownListEvents>
+                                <DropDownListFieldSettings Text="SttStrNam" Value="SttStrKey"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                        </EditTemplate>
+                    </GridColumn>
+                    
+                    <GridColumn Field=@nameof(SprBux.BuxDlg) HeaderText="Спец" ForeignKeyValue="DlgNam" ForeignKeyField="DlgKod" DataSource="@sprdlg" EditType="EditType.DropDownEdit" Width="200">
+                        <EditTemplate>
+                            <SfDropDownList ID="sdsDlg" Placeholder="Выбор должности" TItem="SprDlg" Enabled="@Enabled" TValue="string" DataSource="@sprdlg">
                                 <DropDownListFieldSettings Text="DlgNam" Value="DlgKod"></DropDownListFieldSettings>
                             </SfDropDownList>
                         </EditTemplate>
                     </GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxMol) HeaderText="МОЛ" EditType="EditType.BooleanEdit" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxUbl) HeaderText="Уволен" EditType="EditType.BooleanEdit" Width="150"></GridColumn>
-                    <GridColumn HeaderText="Изм Удл" Width="150">
+                    
+                    <GridColumn Field=@nameof(SprBux.BuxMol) HeaderText="МОЛ" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxUbl) HeaderText="Уволен" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
+                    <GridColumn HeaderText="Изм Удл" Width="100">
                         <GridCommandColumns>
                             <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
                             <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
@@ -66,14 +75,19 @@
     IEnumerable<SprBux> GridData;
     public bool Enabled = false;
 
-    public List<string> SprStt = new List<string>() { "United States", "Australia" };
-    public List<string> SprDlg = new List<string>() { "New York", "Virginia", "Washington" };
+    //   public List<string> SprStt = new List<string>() { "United States", "Australia" };
+    //public List<string> SprDlg = new List<string>() { "New York", "Virginia", "Washington" };
+    public IEnumerable<SprKdr> kdr;
+    public IEnumerable<SprSttStr> sttstr;
+    public IEnumerable<SprDlg> sprdlg;
 
     protected override async Task OnInitializedAsync()
     {
         //Populate the list of video objects from the Video table.
         GridData = await PharmService.Pharm_GetSprBux(AppState.BuxFrm, AppState.BuxUbl);
-        //  GridData = OrdersDetails.GetAllRecords();
+        kdr = await PharmService.Pharm_GetSprKdr(AppState.BuxFrm);
+        sttstr = await PharmService.Pharm_GetSprSttStr(AppState.BuxFrm);
+        sprdlg = await PharmService.Pharm_GetSprDlg();
     }
 
     private void OnBeginHandler(ActionEventArgs<SprBux> Args)
@@ -166,5 +180,6 @@
         }
         Enabled = true;
     }
+
 
 }
