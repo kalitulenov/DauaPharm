@@ -16,15 +16,16 @@
 <div class="col-lg-12 control-section">
     <div class="content-wrapper">
         <div class="row">
-            <SfGrid DataSource="@GridData" AllowSorting="true" AllowFiltering="false" AllowPaging="true" Toolbar="@(new List<string>() { "Add" })" Height="315">
+            <SfGrid DataSource="@GridData" AllowSorting="true" ShowColumnChooser="true" GridLines="GridLine.Vertical"  AllowFiltering="false" AllowPaging="true"  Toolbar="@(new List<string>() { "Add" })" Height="315">
                 <GridPageSettings PageCount="5"></GridPageSettings>
-                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true"></GridEditSettings>
                 <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin="OnBeginHandler" TValue="SprBux"></GridEvents>
                 <GridColumns>
-                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" IsPrimaryKey="true" Width="50"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.Id) HeaderText="Id" Visible="true" IsPrimaryKey="true" Width="50"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" AllowEditing="false" Width="50"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" TextAlign="TextAlign.Right" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" TextAlign="TextAlign.Right" Width="100"></GridColumn>
-                    
+
                     <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" ForeignKeyValue="KdrFio" ForeignKeyField="KdrKod" DataSource="@kdr" TextAlign="TextAlign.Right" Width="100">
                         <EditTemplate>
                             <SfDropDownList ID="sdsTab" Placeholder="Выбор из кадра" PopupWidth="200" TItem="SprKdr" TValue="string" DataSource="@kdr">
@@ -32,7 +33,7 @@
                             </SfDropDownList>
                         </EditTemplate>
                     </GridColumn>
-                    
+
                     <GridColumn Field=@nameof(SprBux.BuxKey) HeaderText="Штатка" ForeignKeyValue="SttStrNam" ForeignKeyField="SttStrKey" DataSource="@sttstr" EditType="EditType.DropDownEdit" Width="200">
                         <EditTemplate>
                             <SfDropDownList ID="sdsStt" Placeholder="Выбор штатки" TItem="SprSttStr" TValue="string" DataSource="@sttstr">
@@ -41,15 +42,15 @@
                             </SfDropDownList>
                         </EditTemplate>
                     </GridColumn>
-                    
-                    <GridColumn Field=@nameof(SprBux.BuxDlg) HeaderText="Спец" ForeignKeyValue="DlgNam" ForeignKeyField="DlgKod" DataSource="@sprdlg" EditType="EditType.DropDownEdit" Width="200">
+
+                    <GridColumn Field=@nameof(SprBux.DlgNam) HeaderText="Спец" EditType="EditType.DropDownEdit" Width="200">
                         <EditTemplate>
-                            <SfDropDownList ID="sdsDlg" Placeholder="Выбор должности" TItem="SprDlg" Enabled="@Enabled" TValue="string" DataSource="@sprdlg">
-                                <DropDownListFieldSettings Text="DlgNam" Value="DlgKod"></DropDownListFieldSettings>
+                            <SfDropDownList ID="DlgNam" Placeholder="Выбор должности" TItem="SprDlg" Enabled="@Enabled" TValue="string" DataSource="@sprdlg">
+                                <DropDownListFieldSettings Text="DlgNam" Value="DlgNam"></DropDownListFieldSettings>
                             </SfDropDownList>
                         </EditTemplate>
                     </GridColumn>
-                    
+
                     <GridColumn Field=@nameof(SprBux.BuxMol) HeaderText="МОЛ" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxUbl) HeaderText="Уволен" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
                     <GridColumn HeaderText="Изм Удл" Width="100">
@@ -79,15 +80,16 @@
     //public List<string> SprDlg = new List<string>() { "New York", "Virginia", "Washington" };
     public IEnumerable<SprKdr> kdr;
     public IEnumerable<SprSttStr> sttstr;
-    public IEnumerable<SprDlg> sprdlg;
+    public List<SprDlg> sprdlg;
+  //  public List<string> sprdlg;
 
     protected override async Task OnInitializedAsync()
     {
         //Populate the list of video objects from the Video table.
-        GridData = await PharmService.Pharm_GetSprBux(AppState.BuxFrm, AppState.BuxUbl);
         kdr = await PharmService.Pharm_GetSprKdr(AppState.BuxFrm);
         sttstr = await PharmService.Pharm_GetSprSttStr(AppState.BuxFrm);
-        sprdlg = await PharmService.Pharm_GetSprDlg();
+        sprdlg = PharmService.Pharm_GetSprDlg(AppState.BuxFrm, "");
+        GridData = await PharmService.Pharm_GetSprBux(AppState.BuxFrm, AppState.BuxUbl);
     }
 
     private void OnBeginHandler(ActionEventArgs<SprBux> Args)
@@ -101,7 +103,19 @@
             }
             else
             {
-                //update data into your db
+                //SprBux sprbux = new SprBux();
+                ////update data into your db
+
+                //if (sprbux.BuxKod == 0)
+                //{
+                //    // Insert if id is zero.
+                //    await VideoService.VideoInsert(sprbux);
+                //}
+                //else
+                //{
+                //    // Update if id not 0
+                //    await VideoService.VideoUpdate(video);
+                //}
             }
         }
     }
@@ -109,18 +123,18 @@
 
     public void ActionCompleteHandler(ActionEventArgs<SprBux> Args)
     {
-        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
-        {
-            if (Args.Action == "add")
-            {
-                var t = Args.Data; //returns the edited / insrted record details.
-                                   //insert into your db
-            }
-            else
-            {
-                //update data into your db
-            }
-        }
+        //if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+        //{
+        //    if (Args.Action == "add")
+        //    {
+        //        var t = Args.Data; //returns the edited / insrted record details.
+        //                           //insert into your db
+        //    }
+        //    else
+        //    {
+        //        //update data into your db
+        //    }
+        //}
         //if (args.RequestType == Action.Save)
         //{
         //    //var id = args.Data.Id;
@@ -170,14 +184,13 @@
 
     public void ValueChange(@Syncfusion.Blazor.DropDowns.ChangeEventArgs<string> args)
     {
-        if (args.Value == "United States")
-        {
-            //   States = new List<string>() { "New York", "Virginia", "Washington" };
-        }
-        else if (args.Value == "Australia")
-        {
-            //    States = new List<string>() { "Queensland", "Tasmania", "Victoria" };
-        }
+        AppState.StrKey = args.Value;
+        sprdlg.Clear();
+        //sprdlg = new List<SprDlg>() { new SprDlg { DlgKod = 1, DlgNam = "m1"},
+        //            new SprDlg{DlgKod = 2, DlgNam = "m2" },
+        //            new SprDlg{DlgKod = 3, DlgNam = "m3" },};
+
+        sprdlg = PharmService.Pharm_GetSprDlg(AppState.BuxFrm, AppState.StrKey);
         Enabled = true;
     }
 

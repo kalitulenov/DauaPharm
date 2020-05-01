@@ -16,8 +16,7 @@ namespace DauaPharm.Data
         Task<IEnumerable<Menu>> Pharm_GetMenu(int BuxFrm, int BuxKod);
         Task<IEnumerable<SprBux>> Pharm_GetSprBux(int BuxFrm, int BuxUbl);
         Task<IEnumerable<SprKdr>> Pharm_GetSprKdr(int BuxFrm);
-        Task<IEnumerable<SprKdrHlp>> Pharm_GetSprKdrHlp(int BuxFrm);
         Task<IEnumerable<SprSttStr>> Pharm_GetSprSttStr(int BuxFrm);
-        Task<IEnumerable<SprDlg>> Pharm_GetSprDlg();
+        List<SprDlg> Pharm_GetSprDlg(int BuxFrm,string StrKey);
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DauaPharm.Data
@@ -151,21 +152,6 @@ namespace DauaPharm.Data
         }
 
         // читать справочник SprBux по параметрам BuxFrm (SQL Select)
-        public async Task<IEnumerable<SprKdrHlp>> Pharm_GetSprKdrHlp(int BuxFrm)
-        {
-            IEnumerable<SprKdrHlp> kdrfio;
-            const string query = @"SELECT KDRKOD,ISNULL(KDRFAM,N'')+N'_'+LEFT(ISNULL(KDRIMA,N''),1)+N'.' + LEFT(ISNULL(KDROTC,N''),1) AS KDRFIO " +
-                                  "FROM SPRKDR WHERE KDRUBL=0 AND KDRFRM=@BuxFrm";
-            var parameters = new DynamicParameters();
-            parameters.Add("BUXFRM", BuxFrm, DbType.Int32);
-            using (var conn = new SqlConnection(_configuration.Value))
-            {
-                kdrfio = await conn.QueryAsync<SprKdrHlp>(query, parameters, commandType: CommandType.Text);
-            }
-            return kdrfio;
-        }
-
-        // читать справочник SprBux по параметрам BuxFrm (SQL Select)
         public async Task<IEnumerable<SprSttStr>> Pharm_GetSprSttStr(int BuxFrm)
         {
             IEnumerable<SprSttStr> sttstr;
@@ -180,19 +166,43 @@ namespace DauaPharm.Data
         }
 
         // читать справочник SprBux по параметрам BuxFrm (SQL Select)
-        public async Task<IEnumerable<SprDlg>> Pharm_GetSprDlg()
+        public List<SprDlg> Pharm_GetSprDlg(int BuxFrm, string StrKey)
         {
-            IEnumerable<SprDlg> sprdlg;
-            const string query = @"SELECT * FROM SprDlg ORDER BY DlgNam ";
+            List<SprDlg> sprdlg;
+            string query;
+            if (StrKey =="") query = @"SELECT SPRDLG.DLGKOD,SPRDLG.DLGNAM FROM SprSttRsp INNER JOIN SprDlg ON SprSttRsp.SttRspDlg=SprDlg.DLGKOD " +
+                                      "WHERE SprSttRsp.SttRspFrm=@BuxFrm ORDER BY DLGNAM";
+            else query = @"SELECT SPRDLG.DLGKOD,SPRDLG.DLGNAM FROM SprSttRsp INNER JOIN SprDlg ON SprSttRsp.SttRspDlg=SprDlg.DLGKOD " +
+                          "WHERE SprSttRsp.SttRspFrm=@BuxFrm AND SprSttRsp.SttRspKey=@StrKey ORDER BY DLGNAM";
+
             var parameters = new DynamicParameters();
+            parameters.Add("BUXFRM", BuxFrm, DbType.Int32);
+            parameters.Add("STRKEY", StrKey, DbType.String);
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                sprdlg = await conn.QueryAsync<SprDlg>(query, parameters, commandType: CommandType.Text);
+                sprdlg = conn.Query<SprDlg>(query, parameters, commandType: CommandType.Text).ToList();
             }
             return sprdlg;
         }
 
-
+        // Update one Video row based on its VideoID (SQL Update)
+       public async Task<bool> Pharm_UpdSprBux(SprBux sprbux)
+        {
+            using (var conn = new SqlConnection(_configuration.Value))
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("BUXKOD", sprbux.BuxKod, DbType.Int32);
+                parameters.Add("BUXLOG", sprbux.BuxLog, DbType.String);
+                parameters.Add("BUXPSW", sprbux.BuxPsw, DbType.String);
+                parameters.Add("BUXTAB", sprbux.BuxTab, DbType.String);
+                parameters.Add("BUXKEY", sprbux.BuxKey, DbType.String);
+                parameters.Add("DLGNAM", sprbux.BuxDlg, DbType.String);
+                parameters.Add("BUXMOL", sprbux.BuxMol, DbType.Boolean);
+                parameters.Add("BUXUBL", sprbux.BuxMol, DbType.Boolean);
+                await conn.ExecuteAsync("spVideo_Update", parameters, commandType: CommandType.StoredProcedure);
+            }
+            return true;
+        }
 
     }
 }

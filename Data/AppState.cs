@@ -10,6 +10,7 @@ namespace DauaPharm.Data
         public int BuxFrm { get; set; }
         public int BuxKod { get; set; }
         public int BuxUbl { get; set; }
+        public string StrKey { get; set; }
 
         public event Action OnChange;
 
