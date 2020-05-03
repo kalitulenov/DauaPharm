@@ -18,5 +18,6 @@ namespace DauaPharm.Data
         Task<IEnumerable<SprKdr>> Pharm_GetSprKdr(int BuxFrm);
         Task<IEnumerable<SprSttStr>> Pharm_GetSprSttStr(int BuxFrm);
         List<SprDlg> Pharm_GetSprDlg(int BuxFrm,string StrKey);
+        Task<bool> Pharm_UpdSprBux(SprBux SprBux);
     }
 }

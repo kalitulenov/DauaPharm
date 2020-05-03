@@ -191,15 +191,16 @@ namespace DauaPharm.Data
             using (var conn = new SqlConnection(_configuration.Value))
             {
                 var parameters = new DynamicParameters();
-                parameters.Add("BUXKOD", sprbux.BuxKod, DbType.Int32);
+                parameters.Add("ID", sprbux.Id, DbType.Int32);
                 parameters.Add("BUXLOG", sprbux.BuxLog, DbType.String);
                 parameters.Add("BUXPSW", sprbux.BuxPsw, DbType.String);
                 parameters.Add("BUXTAB", sprbux.BuxTab, DbType.String);
                 parameters.Add("BUXKEY", sprbux.BuxKey, DbType.String);
-                parameters.Add("DLGNAM", sprbux.BuxDlg, DbType.String);
+                parameters.Add("BUXDLG", sprbux.DlgNam, DbType.String);
+                parameters.Add("BUXSTF", sprbux.BuxStf, DbType.Decimal);
                 parameters.Add("BUXMOL", sprbux.BuxMol, DbType.Boolean);
                 parameters.Add("BUXUBL", sprbux.BuxMol, DbType.Boolean);
-                await conn.ExecuteAsync("spVideo_Update", parameters, commandType: CommandType.StoredProcedure);
+                await conn.ExecuteAsync("ComSprBuxRep", parameters, commandType: CommandType.StoredProcedure);
             }
             return true;
         }

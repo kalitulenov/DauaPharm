@@ -15,7 +15,6 @@ namespace DauaPharm.Data.Entities
         public string BuxPsw { get; set; }
         public string BuxKey { get; set; }
         public int BuxDlg { get; set; }
-        public string BuxDlgNam { get; set; }
         public string DlgNam { get; set; }
         public decimal BuxStf { get; set; }
         public bool? BuxMol { get; set; }

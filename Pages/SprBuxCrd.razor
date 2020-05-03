@@ -21,14 +21,14 @@
                 <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true"></GridEditSettings>
                 <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin="OnBeginHandler" TValue="SprBux"></GridEvents>
                 <GridColumns>
-                    <GridColumn Field=@nameof(SprBux.Id) HeaderText="Id" Visible="true" IsPrimaryKey="true" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" AllowEditing="false" Width="50"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.Id) HeaderText="Id" Visible="false" IsPrimaryKey="true" Width="50"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" AllowEditing="false" Width="70"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" TextAlign="TextAlign.Right" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" TextAlign="TextAlign.Right" Width="100"></GridColumn>
 
                     <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" ForeignKeyValue="KdrFio" ForeignKeyField="KdrKod" DataSource="@kdr" TextAlign="TextAlign.Right" Width="100">
                         <EditTemplate>
-                            <SfDropDownList ID="sdsTab" Placeholder="Выбор из кадра" PopupWidth="200" TItem="SprKdr" TValue="string" DataSource="@kdr">
+                            <SfDropDownList ID="BuxTab" Placeholder="Выбор из кадра" PopupWidth="200" TItem="SprKdr" TValue="string" DataSource="@kdr">
                                 <DropDownListFieldSettings Text="KdrFio" Value="KdrKod"></DropDownListFieldSettings>
                             </SfDropDownList>
                         </EditTemplate>
@@ -36,7 +36,7 @@
 
                     <GridColumn Field=@nameof(SprBux.BuxKey) HeaderText="Штатка" ForeignKeyValue="SttStrNam" ForeignKeyField="SttStrKey" DataSource="@sttstr" EditType="EditType.DropDownEdit" Width="200">
                         <EditTemplate>
-                            <SfDropDownList ID="sdsStt" Placeholder="Выбор штатки" TItem="SprSttStr" TValue="string" DataSource="@sttstr">
+                            <SfDropDownList ID="BuxKey" Placeholder="Выбор штатки" TItem="SprSttStr" TValue="string" DataSource="@sttstr">
                                 <DropDownListEvents TValue="string" ValueChange="ValueChange"></DropDownListEvents>
                                 <DropDownListFieldSettings Text="SttStrNam" Value="SttStrKey"></DropDownListFieldSettings>
                             </SfDropDownList>
@@ -51,6 +51,7 @@
                         </EditTemplate>
                     </GridColumn>
 
+                    <GridColumn Field=@nameof(SprBux.BuxStf) HeaderText="Ставка" EditType="EditType.NumericEdit" Format="C2" Edit="@(new { @params = new  { decimals = 3, value = 4 } })"   Width="150"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxMol) HeaderText="МОЛ" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxUbl) HeaderText="Уволен" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
                     <GridColumn HeaderText="Изм Удл" Width="100">
@@ -70,10 +71,10 @@
 
 
 @code{
-    string Pol;
+        string Pol;
 
-    // Create and empty list, named viideos, of empty Video objects.
-    IEnumerable<SprBux> GridData;
+        // Create and empty list, named viideos, of empty Video objects.
+        IEnumerable<SprBux> GridData;
     public bool Enabled = false;
 
     //   public List<string> SprStt = new List<string>() { "United States", "Australia" };
@@ -81,7 +82,7 @@
     public IEnumerable<SprKdr> kdr;
     public IEnumerable<SprSttStr> sttstr;
     public List<SprDlg> sprdlg;
-  //  public List<string> sprdlg;
+    //  public List<string> sprdlg;
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,7 +93,7 @@
         GridData = await PharmService.Pharm_GetSprBux(AppState.BuxFrm, AppState.BuxUbl);
     }
 
-    private void OnBeginHandler(ActionEventArgs<SprBux> Args)
+    protected async Task OnBeginHandler(ActionEventArgs<SprBux> Args)
     {
         if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
         {
@@ -103,19 +104,20 @@
             }
             else
             {
-                //SprBux sprbux = new SprBux();
-                ////update data into your db
+                SprBux sprbux = new SprBux();
+                sprbux = Args.Data;
+                //update data into your db
 
                 //if (sprbux.BuxKod == 0)
                 //{
-                //    // Insert if id is zero.
-                //    await VideoService.VideoInsert(sprbux);
-                //}
-                //else
-                //{
-                //    // Update if id not 0
-                //    await VideoService.VideoUpdate(video);
-                //}
+                // Insert if id is zero.
+                await PharmService.Pharm_UpdSprBux(sprbux);
+                //    }
+                //    else
+                //    {
+                //        // Update if id not 0
+                //        //   await VideoService.VideoUpdate(video);
+                //    }
             }
         }
     }
