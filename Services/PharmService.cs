@@ -192,6 +192,7 @@ namespace DauaPharm.Data
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("ID", sprbux.Id, DbType.Int32);
+                parameters.Add("BUXFRM", sprbux.BuxFrm, DbType.Int32);
                 parameters.Add("BUXLOG", sprbux.BuxLog, DbType.String);
                 parameters.Add("BUXPSW", sprbux.BuxPsw, DbType.String);
                 parameters.Add("BUXTAB", sprbux.BuxTab, DbType.String);
@@ -199,7 +200,7 @@ namespace DauaPharm.Data
                 parameters.Add("BUXDLG", sprbux.DlgNam, DbType.String);
                 parameters.Add("BUXSTF", sprbux.BuxStf, DbType.Decimal);
                 parameters.Add("BUXMOL", sprbux.BuxMol, DbType.Boolean);
-                parameters.Add("BUXUBL", sprbux.BuxMol, DbType.Boolean);
+                parameters.Add("BUXUBL", sprbux.BuxUbl, DbType.Boolean);
                 await conn.ExecuteAsync("ComSprBuxRep", parameters, commandType: CommandType.StoredProcedure);
             }
             return true;

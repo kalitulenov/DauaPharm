@@ -9,7 +9,7 @@ namespace DauaPharm.Data.Entities
     {
         public int Id { get; set; }
         public int BuxKod { get; set; }
-        public int BuxTab { get; set; }
+        public int? BuxTab { get; set; }
         public int BuxFrm { get; set; }
         public string BuxLog { get; set; }
         public string BuxPsw { get; set; }

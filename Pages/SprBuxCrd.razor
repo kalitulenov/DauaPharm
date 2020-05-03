@@ -21,12 +21,12 @@
                 <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true"></GridEditSettings>
                 <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin="OnBeginHandler" TValue="SprBux"></GridEvents>
                 <GridColumns>
-                    <GridColumn Field=@nameof(SprBux.Id) HeaderText="Id" Visible="false" IsPrimaryKey="true" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" AllowEditing="false" Width="70"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.Id) HeaderText="Id" Visible="false" IsPrimaryKey="true" ></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" AllowEditing="false" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" TextAlign="TextAlign.Right" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" TextAlign="TextAlign.Right" Width="100"></GridColumn>
 
-                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" ForeignKeyValue="KdrFio" ForeignKeyField="KdrKod" DataSource="@kdr" TextAlign="TextAlign.Right" Width="100">
+                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" ForeignKeyValue="KdrFio" ForeignKeyField="KdrKod"  DataSource="@kdr" TextAlign="TextAlign.Right" Width="100">
                         <EditTemplate>
                             <SfDropDownList ID="BuxTab" Placeholder="Выбор из кадра" PopupWidth="200" TItem="SprKdr" TValue="string" DataSource="@kdr">
                                 <DropDownListFieldSettings Text="KdrFio" Value="KdrKod"></DropDownListFieldSettings>
@@ -51,7 +51,7 @@
                         </EditTemplate>
                     </GridColumn>
 
-                    <GridColumn Field=@nameof(SprBux.BuxStf) HeaderText="Ставка" EditType="EditType.NumericEdit" Format="C2" Edit="@(new { @params = new  { decimals = 3, value = 4 } })"   Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.BuxStf) HeaderText="Ставка" EditType="EditType.NumericEdit" Format="N2" Width="150"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxMol) HeaderText="МОЛ" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxUbl) HeaderText="Уволен" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
                     <GridColumn HeaderText="Изм Удл" Width="100">
@@ -95,30 +95,39 @@
 
     protected async Task OnBeginHandler(ActionEventArgs<SprBux> Args)
     {
-        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
         {
-            if (Args.Action == "add")
+            var sprbux = Args.Data;
+            if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
-                var t = Args.Data; //returns the edited / insrted record details.
-                                   //insert into your db
+                sprbux.DlgNam = "DELETE";
             }
             else
             {
-                SprBux sprbux = new SprBux();
-                sprbux = Args.Data;
-                //update data into your db
-
-                //if (sprbux.BuxKod == 0)
-                //{
-                // Insert if id is zero.
-                await PharmService.Pharm_UpdSprBux(sprbux);
-                //    }
-                //    else
-                //    {
-                //        // Update if id not 0
-                //        //   await VideoService.VideoUpdate(video);
-                //    }
+                if (Args.Action == "add")
+                {
+                    sprbux.BuxFrm = AppState.BuxFrm;
+                }
+                else
+                {
+                    if (sprbux.BuxTab == null) sprbux.BuxTab = Args.PreviousData.BuxTab;
+                    if (sprbux.BuxKey == null) sprbux.BuxKey = Args.PreviousData.BuxKey;
+                    if (sprbux.DlgNam == null) sprbux.DlgNam = Args.PreviousData.DlgNam;
+                }
             }
+
+            //update data into your db
+
+            //if (sprbux.BuxKod == 0)
+            //{
+            // Insert if id is zero.
+            await PharmService.Pharm_UpdSprBux(sprbux);
+            //    }
+            //    else
+            //    {
+            //        // Update if id not 0
+            //        //   await VideoService.VideoUpdate(video);
+            //    }
         }
     }
 
