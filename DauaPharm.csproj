@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.35" />
-    <PackageReference Include="Syncfusion.Blazor" Version="18.1.0.44" />
+    <PackageReference Include="Syncfusion.Blazor" Version="18.1.0.48" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
   </ItemGroup>
 

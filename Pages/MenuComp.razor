@@ -18,11 +18,11 @@
 @code{
 
     // Create and empty list, named viideos, of empty Video objects.
-    IEnumerable<Menu> menus;
+    IEnumerable<SprBuxMnu> menus;
     protected override async Task OnInitializedAsync()
     {
         //Populate the list of video objects from the Video table.
-        menus = await PharmService.Pharm_GetMenu(AppState.BuxFrm, AppState.BuxKod);
+        menus = await PharmService.Pharm_GetSprBuxMnu(AppState.BuxFrm, AppState.BuxKod);
     }
 
     public MenuFieldSettings MenuFields = new MenuFieldSettings()

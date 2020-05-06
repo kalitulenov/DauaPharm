@@ -90,6 +90,7 @@ namespace DauaPharm.Data
             return true;
         }
 
+// ==============================================================================================================================
         // Читат Логин
         public Login Pharm_GetLogin(string Log, string Psw)
         {
@@ -104,23 +105,21 @@ namespace DauaPharm.Data
                 loginTmp = conn.QueryFirstOrDefault<Login>(query, parameters, commandType: CommandType.Text);
             }
             return loginTmp;
-           // return new Login() { OrgKod = loginTmp.OrgKod, BuxKod = loginTmp.BuxKod };
-
         }
 
         // читать Меню по параметрам BuxFrm,BuxKod (SQL Select)
-        public async Task<IEnumerable<Menu>> Pharm_GetMenu(int BuxFrm, int BuxKod)
-        {
-            IEnumerable<Menu> menus;
-            var parameters = new DynamicParameters();
-            parameters.Add("BUXFRM", BuxFrm, DbType.Int32);
-            parameters.Add("BUXKOD", BuxKod, DbType.Int32);
-            using (var conn = new SqlConnection(_configuration.Value))
-            {
-                  menus = await conn.QueryAsync<Menu>("ComSprBuxMnu", parameters, commandType: CommandType.StoredProcedure);
-            }
-            return menus;
-        }
+        //public async Task<IEnumerable<SprBuxMnu>> Pharm_GetMenu(int BuxFrm, int BuxKod)
+        //{
+        //    IEnumerable<SprBuxMnu> menus;
+        //    var parameters = new DynamicParameters();
+        //    parameters.Add("BUXFRM", BuxFrm, DbType.Int32);
+        //    parameters.Add("BUXKOD", BuxKod, DbType.Int32);
+        //    using (var conn = new SqlConnection(_configuration.Value))
+        //    {
+        //        menus = await conn.QueryAsync<SprBuxMnu>("ComSprBuxMnu", parameters, commandType: CommandType.StoredProcedure);
+        //    }
+        //    return menus;
+        //}
 
         // читать справочник SprBux по параметрам BuxFrm (SQL Select)
         public async Task<IEnumerable<SprBux>> Pharm_GetSprBux(int BuxFrm,int BuxUbl)
@@ -205,6 +204,38 @@ namespace DauaPharm.Data
             }
             return true;
         }
+
+        // читать Меню Бухгалтера по параметрам BuxFrm,BuxKod (SQL Select)
+        public async Task<IEnumerable<SprBuxMnu>> Pharm_GetSprBuxMnu(int BuxFrm, int BuxKod)
+        {
+            IEnumerable<SprBuxMnu> buxmnus;
+            var parameters = new DynamicParameters();
+            parameters.Add("BUXFRM", BuxFrm, DbType.Int32);
+            parameters.Add("BUXKOD", BuxKod, DbType.Int32);
+            using (var conn = new SqlConnection(_configuration.Value))
+            {
+                buxmnus = await conn.QueryAsync<SprBuxMnu>("ComSprBuxMnu", parameters, commandType: CommandType.StoredProcedure);
+            }
+            return buxmnus;
+        }
+
+        // Update one Video row based on its VideoID (SQL Update)
+        public async Task<bool> Pharm_UpdSprBuxMnu(SprBuxMnu sprbuxmnu, int BuxFrm, int BuxKod)
+        {
+            using (var conn = new SqlConnection(_configuration.Value))
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("BUXFRM", BuxFrm, DbType.Int32);
+                parameters.Add("BUXKOD", BuxKod, DbType.Int32);
+                parameters.Add("BUXNUM", sprbuxmnu.MnuBarNum, DbType.Int32);
+                parameters.Add("BUXPRN", sprbuxmnu.MnuBarPrn, DbType.Int32);
+                parameters.Add("BUXCLD", sprbuxmnu.MnuBarCld, DbType.Boolean);
+                parameters.Add("BUXFLG", sprbuxmnu.MnuBarFlg, DbType.Boolean);
+                await conn.ExecuteAsync("ComSprBuxMnuRep", parameters, commandType: CommandType.StoredProcedure);
+            }
+            return true;
+        }
+
 
     }
 }
