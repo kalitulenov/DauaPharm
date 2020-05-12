@@ -136,18 +136,19 @@ namespace DauaPharm.Data
         }
 
         // читать справочник SprBux по параметрам BuxFrm (SQL Select)
-        public async Task<IEnumerable<SprKdr>> Pharm_GetSprKdr(int BuxFrm)
+        public async Task<List<SprKdr>> Pharm_GetSprKdr(int BuxFrm, int BuxUbl)
         {
             IEnumerable<SprKdr> kdrs;
             const string query = @"SELECT SPRKDR.*,ISNULL(KDRFAM,N'')+N'_'+LEFT(ISNULL(KDRIMA,N''),1)+N'.' + LEFT(ISNULL(KDROTC,N''),1) AS KDRFIO "+
-                                  "FROM SPRKDR WHERE KDRFRM=@BuxFrm";
+                                  "FROM SPRKDR WHERE KDRFRM=@BuxFrm AND ISNULL(KDRUBL,0)=@BuxUbl";
             var parameters = new DynamicParameters();
             parameters.Add("BUXFRM", BuxFrm, DbType.Int32);
+            parameters.Add("BUXUBL", BuxUbl, DbType.Int32);
             using (var conn = new SqlConnection(_configuration.Value))
             {
                 kdrs = await conn.QueryAsync<SprKdr>(query, parameters, commandType: CommandType.Text);
             }
-            return kdrs;
+            return kdrs.ToList();
         }
 
         // читать справочник SprBux по параметрам BuxFrm (SQL Select)
@@ -235,7 +236,6 @@ namespace DauaPharm.Data
             }
             return true;
         }
-
 
     }
 }

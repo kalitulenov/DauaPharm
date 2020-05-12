@@ -15,7 +15,7 @@ namespace DauaPharm.Data
         Login Pharm_GetLogin(string Log, string Psw);
         //Task<IEnumerable<SprBuxMnu>> Pharm_GetMenu(int BuxFrm, int BuxKod);
         Task<IEnumerable<SprBux>> Pharm_GetSprBux(int BuxFrm, int BuxUbl);
-        Task<IEnumerable<SprKdr>> Pharm_GetSprKdr(int BuxFrm);
+        Task<List<SprKdr>> Pharm_GetSprKdr(int BuxFrm, int BuxUbl);
         Task<IEnumerable<SprSttStr>> Pharm_GetSprSttStr(int BuxFrm);
         List<SprDlg> Pharm_GetSprDlg(int BuxFrm,string StrKey);
         Task<bool> Pharm_UpdSprBux(SprBux SprBux);

@@ -18,7 +18,7 @@
         <div class="row">
             <SfGrid DataSource="@GridData" AllowSorting="true" ShowColumnChooser="true" GridLines="GridLine.Vertical"  AllowFiltering="false" AllowPaging="true"  Toolbar="@(new List<string>() { "Add" })" Height="315">
                 <GridPageSettings PageCount="5"></GridPageSettings>
-                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                <GridEditSettings  AllowResizing="true" AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true"></GridEditSettings>
                 <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin="OnBeginHandler" TValue="SprBux"></GridEvents>
                 <GridColumns>
                     <GridColumn Field=@nameof(SprBux.Id) HeaderText="Id" Visible="false" IsPrimaryKey="true" ></GridColumn>
@@ -87,7 +87,7 @@
     protected override async Task OnInitializedAsync()
     {
         //Populate the list of video objects from the Video table.
-        kdr = await PharmService.Pharm_GetSprKdr(AppState.BuxFrm);
+        kdr = await PharmService.Pharm_GetSprKdr(AppState.BuxFrm,0);
         sttstr = await PharmService.Pharm_GetSprSttStr(AppState.BuxFrm);
         sprdlg = PharmService.Pharm_GetSprDlg(AppState.BuxFrm, "");
         GridData = await PharmService.Pharm_GetSprBux(AppState.BuxFrm, AppState.BuxUbl);

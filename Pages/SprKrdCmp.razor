@@ -1,0 +1,251 @@
+﻿@page "/sprkdrcmp"
+@layout MainLayout
+
+
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+
+@using DauaPharm.Data;
+@using DauaPharm.Data.Entities;
+
+@inject AppState AppState
+@inject IPharmService PharmService
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+
+<div class="col-md-12 control-section">
+    <div class="content-wrapper">
+        <div>
+
+            <label class="showhide" style="padding: 10px 5px 10px 0"> Работающие </label>
+            <SfSwitch ValueChange="@((Syncfusion.Blazor.Buttons.ChangeEventArgs args) => { change("KdrUbl", args); })" @bind-Checked="@Check"></SfSwitch>
+        </div>
+        <div class="row">
+            <SfGrid DataSource="@GridData" AllowSorting="true" ShowColumnChooser="true" GridLines="GridLine.Vertical" AllowFiltering="false" AllowResizing="true" AllowPaging="true" Toolbar="@(new List<string>() { "Add" })" Height="315">
+                <GridPageSettings PageCount="5"></GridPageSettings>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin=" OnBeginHandler" CommandClicked="CommandClickHandler" TValue="SprKdr"></GridEvents>
+                <GridColumns>
+                    <GridColumn HeaderText="Фото" TextAlign="TextAlign.Center" Width="120">
+                        <Template>
+                            @{
+                                var sprkdr = (context as SprKdr);
+                                <div class="image">
+                                    <img src="@UriHelper.ToAbsoluteUri($"img/Foto/{sprkdr.KdrKod}.png")" alt="@sprkdr.KdrKod" />
+                                </div>
+                            }
+                        </Template>
+
+
+                    </GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.Id) HeaderText="Id" Visible="false" IsPrimaryKey="true"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrKod) HeaderText="Код" AllowEditing="false" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrFam) HeaderText="Фамилия" TextAlign="TextAlign.Left" Width="150" ClipMode="ClipMode.EllipsisWithTooltip">
+                        <Template>
+                            @{
+                                var sprkdr = (context as SprKdr);
+                                <div>
+                                    <div class="empimg">
+                                        @if (sprkdr.KdrSex == true)
+                                        {
+                                            <span class="e-userimg sf-icon-Male"></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="e-userimg sf-icon-FeMale"></span>
+                                        }
+                                    </div>
+                                    <span id="Emptext">@sprkdr.KdrFam</span>
+                                </div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrIma) HeaderText="Имя" TextAlign="TextAlign.Left" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrOtc) HeaderText="Отчество" TextAlign="TextAlign.Left" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrSex) HeaderText="Пол" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrIin) HeaderText="ИИН" TextAlign="TextAlign.Left" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrDnn) HeaderText="№ удост." TextAlign="TextAlign.Left" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrDdt) HeaderText="Дата выдачи" TextAlign="TextAlign.Left" EditType="EditType.DatePickerEdit" Format="dd.MM.yyyy" Type="ColumnType.Date" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrDpl) HeaderText="Кем выдан" TextAlign="TextAlign.Left" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrThn) HeaderText="Телефон" TextAlign="TextAlign.Left" Width="100"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrKodSup) HeaderText="Код Supreme" Format="N2" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrUbl) HeaderText="Увол" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
+                    <GridColumn HeaderText="Карта" TextAlign="TextAlign.Center" Width="80">
+                        <Template>
+                            @{
+                                var sprkdr = (context as SprKdr);
+                                @*<div><a href="#" @onclick="@(() => Navigate(sprkdr))">View</a></div>*@
+                                @*<button class="e-icons e-search" @onclick="@(e => Navigate(sprkdr))"></button>*@
+                                <SfButton CssClass="e-link" IconCss="e-icons e-search" @onclick="@(e => Navigate(sprkdr))"></SfButton>
+                                @*<SfButton IconCss="e-icons e-search" IconPosition="IconPosition.Right" @onclick="@(e => Navigate(sprkdr))"></SfButton>*@
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn HeaderText="Изм Удл" Width="100">
+                        <GridCommandColumns>
+                            <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
+                            <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
+                            <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-save", CssClass="e-flat" })"></GridCommandColumn>
+                            <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-cancel-icon", CssClass="e-flat" })"></GridCommandColumn>
+                        </GridCommandColumns>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-lg-12 control-section" id="target">
+    <SfDialog @bind-Visible="@IsVisible" Width="700px" Height="75%" IsModal="true" MinHeight="400px" ShowCloseIcon="true">
+        <DialogEvents OnOpen="@DialogOpen" Closed="@DialogClose"></DialogEvents>
+        <DialogTemplates>
+            <Content>
+                @{
+                    <SprKdrOneCmp Title="@Fio"/>
+                }
+            </Content>
+        </DialogTemplates>
+    </SfDialog>
+</div>
+
+<style>
+    /*.showhide {
+                    font-size: 15px;
+                    font-weight: 200;
+                }*/
+
+    .image img {
+        height: 55px;
+        width: 55px;
+        border-radius: 50px;
+        box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
+    }
+    .e-search:before {
+        content: '\e993';
+    }
+</style>
+
+
+@code{
+    string Pol;
+
+    //[Parameter]
+    //public RenderFragment ChildContent { get; set; }
+
+
+    //SfGrid<SprKdr> Grid;
+
+    // Create and empty list, named viideos, of empty Video objects.
+    List<SprKdr> GridData;
+    Boolean Check = true;
+
+    string Fio = "";
+
+    private bool IsVisible { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        GridData = await PharmService.Pharm_GetSprKdr(AppState.BuxFrm, 0);
+    }
+
+    protected async Task OnBeginHandler(ActionEventArgs<SprKdr> Args)
+    {
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+        {
+            var SprKdr = Args.Data;
+            if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+                //  SprKdr.DlgNam = "DELETE";
+                this.IsVisible = true;
+            }
+            else
+            {
+                if (Args.Action == "add")
+                {
+                    SprKdr.KdrFrm = AppState.BuxFrm;
+                }
+                else
+                {
+                    //if (SprKdr.BuxTab == null) SprKdr.BuxTab = Args.PreviousData.BuxTab;
+                    //if (SprKdr.BuxKey == null) SprKdr.BuxKey = Args.PreviousData.BuxKey;
+                    //if (SprKdr.DlgNam == null) SprKdr.DlgNam = Args.PreviousData.DlgNam;
+                }
+            }
+
+            //update data into your db
+
+            //if (SprKdr.BuxKod == 0)
+            //{
+            // Insert if id is zero.
+            // await PharmService.Pharm_UpdSprKdr(SprKdr);
+            //    }
+            //    else
+            //    {
+            //        // Update if id not 0
+            //        //   await VideoService.VideoUpdate(video);
+            //    }
+        }
+    }
+
+
+    public void CommandClickHandler(CommandClickEventArgs<SprKdr> args)
+    {
+        if (args.CommandColumn.Type != CommandButtonType.Save)
+            return;
+
+        var lookup = args.RowData;
+
+        StateHasChanged();
+    }
+
+
+    public void RowSelectHandler(RowSelectEventArgs<SprKdr> args)
+    {
+        // Here you can customize your code
+        var t = args.Data; //returns the edited / insrted record details.
+                           //insert into your db
+    }
+
+
+    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<SprKdr> args)
+    {
+        // Here you can customize your code
+        var t = args.RowData; //returns the edited / insrted record details.
+    }
+
+    protected async Task change(string name, Syncfusion.Blazor.Buttons.ChangeEventArgs args)
+    {
+        if (args.Checked)
+        {
+            GridData = await PharmService.Pharm_GetSprKdr(AppState.BuxFrm, 1);
+        }
+        else
+        {
+            GridData = await PharmService.Pharm_GetSprKdr(AppState.BuxFrm, 0);
+        }
+        StateHasChanged();
+    }
+
+    private void Navigate(SprKdr sprkdr)
+    {
+        // this.Visibility = true;
+        Fio = sprkdr.KdrFio;
+        this.IsVisible = true;
+
+
+        //       UriHelper.NavigateTo($"{ Employee.Link}/{Employee.EmployeeID.ToString()}/{Employee.Name}/{ Employee.Title}");
+    }
+
+    private void DialogOpen(Object args)
+    {
+        //this.ShowButton = false;
+    }
+    private void DialogClose(Object args)
+    {
+        //this.ShowButton = true;
+    }
+
+    //===================================================================================================================
+}
