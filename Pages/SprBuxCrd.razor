@@ -12,21 +12,21 @@
 @inject AppState AppState
 @inject IPharmService PharmService
 
-
+    <h2>Справочник провизоров</h2>
 <div class="col-lg-12 control-section">
     <div class="content-wrapper">
         <div class="row">
-            <SfGrid DataSource="@GridData" AllowSorting="true" ShowColumnChooser="true" GridLines="GridLine.Vertical"  AllowFiltering="false" AllowPaging="true"  Toolbar="@(new List<string>() { "Add" })" Height="315">
+            <SfGrid DataSource="@GridData" AllowSorting="true" ShowColumnChooser="true" AllowResizing="true" GridLines="GridLine.Vertical" AllowFiltering="false" AllowPaging="true" Toolbar="@(new List<string>() { "Add" })" Height="315">
                 <GridPageSettings PageCount="5"></GridPageSettings>
-                <GridEditSettings  AllowResizing="true" AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true"></GridEditSettings>
                 <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin="OnBeginHandler" TValue="SprBux"></GridEvents>
                 <GridColumns>
-                    <GridColumn Field=@nameof(SprBux.Id) HeaderText="Id" Visible="false" IsPrimaryKey="true" ></GridColumn>
+                    <GridColumn Field=@nameof(SprBux.Id) HeaderText="Id" Visible="false" IsPrimaryKey="true"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxKod) HeaderText="Код" AllowEditing="false" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxLog) HeaderText="Логин" TextAlign="TextAlign.Right" Width="100"></GridColumn>
                     <GridColumn Field=@nameof(SprBux.BuxPsw) HeaderText="Пароль" TextAlign="TextAlign.Right" Width="100"></GridColumn>
 
-                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" ForeignKeyValue="KdrFio" ForeignKeyField="KdrKod"  DataSource="@kdr" TextAlign="TextAlign.Right" Width="100">
+                    <GridColumn Field=@nameof(SprBux.BuxTab) HeaderText="Таб" ForeignKeyValue="KdrFio" ForeignKeyField="KdrKod" DataSource="@kdr" TextAlign="TextAlign.Right" Width="100">
                         <EditTemplate>
                             <SfDropDownList ID="BuxTab" Placeholder="Выбор из кадра" PopupWidth="200" TItem="SprKdr" TValue="string" DataSource="@kdr">
                                 <DropDownListFieldSettings Text="KdrFio" Value="KdrKod"></DropDownListFieldSettings>
@@ -71,10 +71,10 @@
 
 
 @code{
-        string Pol;
+    string Pol;
 
-        // Create and empty list, named viideos, of empty Video objects.
-        IEnumerable<SprBux> GridData;
+    // Create and empty list, named viideos, of empty Video objects.
+    IEnumerable<SprBux> GridData;
     public bool Enabled = false;
 
     //   public List<string> SprStt = new List<string>() { "United States", "Australia" };
@@ -87,7 +87,7 @@
     protected override async Task OnInitializedAsync()
     {
         //Populate the list of video objects from the Video table.
-        kdr = await PharmService.Pharm_GetSprKdr(AppState.BuxFrm,0);
+        kdr = await PharmService.Pharm_GetSprKdr(AppState.BuxFrm, 0);
         sttstr = await PharmService.Pharm_GetSprSttStr(AppState.BuxFrm);
         sprdlg = PharmService.Pharm_GetSprDlg(AppState.BuxFrm, "");
         GridData = await PharmService.Pharm_GetSprBux(AppState.BuxFrm, AppState.BuxUbl);

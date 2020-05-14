@@ -15,11 +15,12 @@
 @inject AppState AppState
 @inject IPharmService PharmService
 
+    <h2>Справочник провизоров и меню</h2>
 <div class="col-lg-12 control-section">
     <div class="control_wrapper">
-        <SfSplitter Height="400px" Width="800px">
+        <SfSplitter Height="400px" Width="900px">
             <SplitterPanes>
-                <SplitterPane Size="35%" Min="25%">
+                <SplitterPane Size="50%" Min="25%">
                     <ContentTemplate>
                         <div>
                             <SfGrid DataSource="@GridData" AllowSorting="true" ShowColumnChooser="true" GridLines="GridLine.Vertical" AllowFiltering="false" AllowPaging="true" Height="315">
@@ -35,7 +36,7 @@
                         </div>
                     </ContentTemplate>
                 </SplitterPane>
-                <SplitterPane Size="65%" Min="45%">
+                <SplitterPane Size="50%" Min="45%">
                     <ContentTemplate>
                         <div>
                             <div class="col-lg-12 control-section">
