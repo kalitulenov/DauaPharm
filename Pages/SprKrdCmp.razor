@@ -22,12 +22,12 @@
             <SfSwitch ValueChange="@((Syncfusion.Blazor.Buttons.ChangeEventArgs args) => { change("KdrUbl", args); })" @bind-Checked="@Check"></SfSwitch>
         </div>
         <div class="row">
-            <SfGrid DataSource="@GridData" AllowSorting="true" ShowColumnChooser="true" GridLines="GridLine.Vertical" AllowFiltering="false" AllowResizing="true" AllowPaging="true" Toolbar="@(new List<string>() { "Add" })" Height="315">
+            <SfGrid @ref="Grid" DataSource="@GridData" AllowSorting="true" ShowColumnChooser="true" GridLines="GridLine.Vertical" AllowFiltering="false" AllowResizing="true" AllowPaging="true" Toolbar="@(new List<string>() { "Add" })" Height="100%" Width="100%">
                 <GridPageSettings PageCount="5"></GridPageSettings>
                 <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true"></GridEditSettings>
                 <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" OnActionBegin=" OnBeginHandler" CommandClicked="CommandClickHandler" TValue="SprKdr"></GridEvents>
                 <GridColumns>
-                    <GridColumn HeaderText="Фото" TextAlign="TextAlign.Center" Width="120">
+                    <GridColumn HeaderText="Фото" TextAlign="TextAlign.Center" Width="5%">
                         <Template>
                             @{
                                 var sprkdr = (context as SprKdr);
@@ -39,9 +39,9 @@
 
 
                     </GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.Id) HeaderText="Id" Visible="false" IsPrimaryKey="true"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrKod) HeaderText="Код" AllowEditing="false" Width="100"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrFam) HeaderText="Фамилия" TextAlign="TextAlign.Left" Width="150" ClipMode="ClipMode.EllipsisWithTooltip">
+                    <GridColumn Field=@nameof(SprKdr.Id) HeaderText="Id" Visible="false" IsPrimaryKey="true"  Width="0%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrKod) HeaderText="Код" AllowEditing="false"  Width="5%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrFam) HeaderText="Фамилия" TextAlign="TextAlign.Left"  Width="10%" ClipMode="ClipMode.EllipsisWithTooltip">
                         <Template>
                             @{
                                 var sprkdr = (context as SprKdr);
@@ -61,17 +61,17 @@
                             }
                         </Template>
                     </GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrIma) HeaderText="Имя" TextAlign="TextAlign.Left" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrOtc) HeaderText="Отчество" TextAlign="TextAlign.Left" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrSex) HeaderText="Пол" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrIin) HeaderText="ИИН" TextAlign="TextAlign.Left" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrDnn) HeaderText="№ удост." TextAlign="TextAlign.Left" Width="100"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrDdt) HeaderText="Дата выдачи" TextAlign="TextAlign.Left" EditType="EditType.DatePickerEdit" Format="dd.MM.yyyy" Type="ColumnType.Date" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrDpl) HeaderText="Кем выдан" TextAlign="TextAlign.Left" Width="100"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrThn) HeaderText="Телефон" TextAlign="TextAlign.Left" Width="100"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrKodSup) HeaderText="Код Supreme" Format="N2" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(SprKdr.KdrUbl) HeaderText="Увол" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true" Width="100"></GridColumn>
-                    <GridColumn HeaderText="Карта" TextAlign="TextAlign.Center" Width="80">
+                    <GridColumn Field=@nameof(SprKdr.KdrIma) HeaderText="Имя" TextAlign="TextAlign.Left"  Width="5%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrOtc) HeaderText="Отчество" TextAlign="TextAlign.Left"  Width="10%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrSex) HeaderText="Пол" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true"  Width="5%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrIin) HeaderText="ИИН" TextAlign="TextAlign.Left"  Width="5%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrDnn) HeaderText="№ удост." TextAlign="TextAlign.Left"  Width="5%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrDdt) HeaderText="Дата выдачи" TextAlign="TextAlign.Left" EditType="EditType.DatePickerEdit" Format="dd.MM.yyyy" Type="ColumnType.Date"  Width="5%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrDpl) HeaderText="Кем выдан" TextAlign="TextAlign.Left"  Width="5%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrThn) HeaderText="Телефон" TextAlign="TextAlign.Left"  Width="5%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrKodSup) HeaderText="Код Supreme" Format="N2"  Width="5%"></GridColumn>
+                    <GridColumn Field=@nameof(SprKdr.KdrUbl) HeaderText="Увол" EditType="EditType.BooleanEdit" DisplayAsCheckBox="true"  Width="5%"></GridColumn>
+                    <GridColumn HeaderText="Карта" TextAlign="TextAlign.Center"  Width="5%">
                         <Template>
                             @{
                                 var sprkdr = (context as SprKdr);
@@ -82,7 +82,7 @@
                             }
                         </Template>
                     </GridColumn>
-                    <GridColumn HeaderText="Изм Удл" Width="100">
+                    <GridColumn HeaderText="Изм Удл"  Width="10%">
                         <GridCommandColumns>
                             <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
                             <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
@@ -111,6 +111,15 @@
 </div>
 
 <style>
+    /* Изменить размер шрифта GRID*/
+    .e-grid .e-headercelldiv {
+        font-size: 10px;
+    }
+
+    .e-grid .e-rowcell {
+        font-size: 10px;
+        /* Изменить размер шрифта GRID*/
+    } 
     /*.showhide {
                     font-size: 15px;
                     font-weight: 200;
@@ -139,6 +148,7 @@
     //SfGrid<SprKdr> Grid;
 
     // Create and empty list, named viideos, of empty Video objects.
+    private SfGrid<SprKdr> Grid;
     List<SprKdr> GridData;
     Boolean Check = true;
 
