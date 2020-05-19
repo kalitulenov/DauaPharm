@@ -9,38 +9,72 @@
 @inject IPharmService PharmService
 
 
-<div id="ControlRegion">
     <div class="menu-control">
-        <SfMenu Items="@menus" Fields="@MenuFields"></SfMenu>
+        <div class="layout">
+            <div id="container">
+                <SfMenu Items="@menus" Fields="@MenuFields" CssClass="e-scrollable-menu"></SfMenu>
+            </div>
+        </div>
     </div>
-</div>
 
-@code{
+            @code{
 
-    // Create and empty list, named viideos, of empty Video objects.
-    IEnumerable<SprBuxMnu> menus;
-    protected override async Task OnInitializedAsync()
-    {
-        //Populate the list of video objects from the Video table.
-        menus = await PharmService.Pharm_GetSprBuxMnu(AppState.BuxFrm, AppState.BuxKod);
-    }
+                // Create and empty list, named viideos, of empty Video objects.
+                IEnumerable<SprBuxMnu> menus;
+                protected override async Task OnInitializedAsync()
+                {
+                    //Populate the list of video objects from the Video table.
+                    menus = await PharmService.Pharm_GetSprBuxMnu(AppState.BuxFrm, AppState.BuxKod);
+                }
 
-    public MenuFieldSettings MenuFields = new MenuFieldSettings()
-    {
-        ItemId = "MnuBarKod",
-        Text = "MnuBarTxt",
-        ParentId = "MnuBarPrn",
-        Url = "MnuBarUrl"
-    };
+                public MenuFieldSettings MenuFields = new MenuFieldSettings()
+                {
+                    ItemId = "MnuBarKod",
+                    Text = "MnuBarTxt",
+                    ParentId = "MnuBarPrn",
+                    Url = "MnuBarUrl"
+                };
 
-}
-<style>
-    .e-menu-wrapper {
-        text-align: center;
-    }
+            }
+            <style>
+                .e-scrollable-menu:not(.e-menu-popup) {
+                    width: 1200px;
+                 }
 
-    .menu-control {
-        margin-top: 45px;
-        text-align: center;
-    }
-</style>
+                .e-menu-wrapper {
+                    text-align: center;
+                }
+
+                .menu-control {
+                    margin-top: 5px;
+                    text-align: center;
+                }
+
+                .e-menu-wrapper ul .e-menu-item.e-selected {
+                    background-color: green;
+                    color: white;
+                }
+
+                /*.e-menu-wrapper il {
+                    width: 100%;
+                }*/
+
+                .e-menu-wrapper ul .e-menu-item {
+                    width: 240px;
+                }
+
+                .e-menu-wrapper ul .e-menu-item.e-focused {
+                    background-color: green;
+                    color: white;
+                }
+
+                .e-menu-wrapper .e-ul .e-menu-item.e-focused {
+                    background-color: green;
+                    color: white;
+                }
+
+                .e-menu-wrapper .e-ul .e-menu-item.e-selected {
+                    background-color: green;
+                    color: white;
+                }
+            </style>
